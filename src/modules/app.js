@@ -33,3 +33,4 @@ export default class App {
         document.body.append(donateFormHTML, donateListHTML);
     }
 }
+
