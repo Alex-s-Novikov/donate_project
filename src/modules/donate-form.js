@@ -1,49 +1,53 @@
-// import JS_IMAGE from '../../assets/background.jpg'
+import { Settings } from "../core/constans/settings";
 
 export class DonateForm {
-    #donateContainer
-
-    constructor() {
-
-        this.#donateContainer = document.createElement('div')
-        this.#donateContainer.className = 'donate-container'
+    #container
+    constructor (totalAmount, createNewDonate ) {
+        this.#container = document.createElement('form');
+        this.totalAmount = totalAmount;
+        this.createNewDonate = createNewDonate;
     }
 
-    render() {
-        const donateFormCreate = document.createElement('form')
-        donateFormCreate.className = 'donate-form'
 
+    render () {
+        this.#container.className = 'donate-form';
+        const totalAmount = document.createElement('h1');
+        totalAmount.id = 'total-amount';
+        totalAmount.textContent = `${this.totalAmount}${Settings.currency}`;
 
-        let formContent = document.createElement('h1')
-        formContent.textContent = '28$'
-        formContent.id = 'total-amount'
+        const inputLabel = document.createElement('label');
+        inputLabel.className = 'donate-form__input-label';
+        inputLabel.textContent = `Введите сумму в ${Settings.currency}`;
 
-        let label = document.createElement('label')
-        label.className = 'donate-form__input-label'
-        label.textContent = 'Введите сумму в $'
-
-        let input = document.createElement('input')
-        input.className = 'donate-form__donate-input'
-        input.name = 'amount'
-        input.type = 'number'
-        input.max = '100'
-        input.min = '1'
-        input.setAttribute('required', "")
-
-        let button = document.createElement('button')
-        button.className = 'donate-form__submit-button'
-        button.type = 'submit'
-        button.textContent = 'Задонатить'
+        const inputDonate = document.createElement('input');
+        inputDonate.className = 'donate-form__donate-input';
+        inputDonate.name = 'amount';
+        inputDonate.type = 'number';
+        inputDonate.max = 100;
+        inputDonate.min = 0;
         
+        inputDonate.setAttribute("required", "");
 
-        this.#donateContainer.append(donateFormCreate)
-        donateFormCreate.appendChild(formContent)
-        donateFormCreate.appendChild(label)
-        label.appendChild(input)
-        donateFormCreate.appendChild(button)
+        const buttonDonate = document.createElement('button');
+        buttonDonate.className = 'donate-form__submit-button';
+        buttonDonate.type = 'submit';
+        buttonDonate.textContent = 'Задонатить';
 
-        return this.#donateContainer
+        this.#container.addEventListener('submit', event => {
+            event.preventDefault();
+            const amount = this.#container.querySelector('.donate-form__donate-input');
+            this.createNewDonate({
+                date: new Date(),
+                amount: Number(amount.value)
+            })
+            amount.value = 0;
+        })
+
+        inputLabel.append(inputDonate);
+        this.#container.append(totalAmount, inputLabel, buttonDonate);
+        return this.#container;
+    }
+    updateTotalAmount (newAmount) {
+        document.querySelector('#total-amount').textContent = `${newAmount}${Settings.currency}`
     }
 }
-
-
